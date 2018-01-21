@@ -11,7 +11,7 @@ Use Rust to update shuttle configuration file, mainly used for accessing AWS.
 
 ## TODO List
 
-- [ ] Read `shuttle` configuration file
+- [x] Read `shuttle` configuration file
 - [ ] Parse configuration to get each AWS instance id
 - [ ] Fetch public ip of AWS instance id
 - [ ] Overwrite public ip with the newly one to Configuration
