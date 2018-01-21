@@ -16,5 +16,8 @@ Cargo.lock
 /target/
 **/*.rs.bk
 
-# source
+# binary
 main
+
+# configure files
+config.toml

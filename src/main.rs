@@ -1,4 +1,7 @@
 extern crate serde_json;
+#[macro_use]
+extern crate serde_derive;
+extern crate toml;
 
 #[macro_use]
 extern crate try_opt;
@@ -19,6 +22,9 @@ fn main() {
     for info in hosts.iter() {
         let mut cluster = info.as_object().unwrap();
     }
+
+    // load aws config
+    load_aws_config();
 }
 
 // read shuttle default configuration
@@ -44,5 +50,19 @@ fn read_shuttle_config() -> Option<String> {
     return Some(contents);
 }
 
+#[derive(Deserialize, Debug)]
+struct AwsConfig {
+    region: String,
+    key_id: String,
+    access_key: String
+}
+
 
 // 
+fn load_aws_config() -> Result<AwsConfig, String> {
+    let config_str = include_str!("config.toml");
+    let value = config_str.parse::<toml::Value>().unwrap();
+    let aws_config = value["aws"].clone().try_into::<AwsConfig>().unwrap();
+
+    Ok(aws_config)
+}
