@@ -21,8 +21,8 @@ fn main() {
     let hosts: &Vec<Value> = v["hosts"].as_array().unwrap();
     for info in hosts.iter() {
         let mut cluster = info.as_object().unwrap();
-        for sub in cluster.iter() {
-            println!("{:?}", sub);
+        for (ref key, ref val) in cluster.iter() {
+            println!("{}, {}", key, val);
         }
     }
 
