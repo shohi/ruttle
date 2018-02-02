@@ -22,7 +22,13 @@ fn main() {
     for info in hosts.iter() {
         let mut cluster = info.as_object().unwrap();
         for (ref key, ref val) in cluster.iter() {
-            println!("{}, {}", key, val);
+            // println!("{}, {}", key, val);
+            println!("{}", key);
+            let group = val.as_array().unwrap();
+            for inst in group.iter() {
+                if let 
+                println!("inst: {}", inst)
+            }
         }
     }
 
