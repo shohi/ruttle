@@ -2,12 +2,13 @@
 
 Use Rust to update shuttle configuration file, mainly used for accessing AWS.
 
+
 ## Prerequisite
 
 1. `shuttle` - <https://github.com/fitztrev/shuttle>
 > `brew cask install shuttle`
 
-2. `rust` -- <https://github.com/rust-lang/rust>
+2. `rust` -- <https://github.com/rust-lang/rust>, `version >= 1.26`
 
 ## TODO List
 
