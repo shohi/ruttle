@@ -21,3 +21,7 @@ main
 
 # configure files
 config.toml
+
+# IDE related
+.idea/
+*.iml
