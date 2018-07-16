@@ -58,13 +58,17 @@ cargo install
 ## TODO List
 
 - [x] Read `shuttle` configuration file
-- [x] Read `AWS` configuration
+- [x] Use default `AWS` credentials
 - [x] Parse configuration to get each AWS instance id
 - [x] Fetch public ip of AWS instance id
 - [x] Overwrite public ip with the newly one to Configuration
 - [x] Dump configuration to file
 - [ ] Refactor project structure
+- [ ] Support `AWS` credentials configuration
+- [ ] Update public ip regardless structure of shuttle config
 
 ## Note
 
 1. `shuttle` configuration is located at `~/.shuttle.json`
+
+2. `AWS` Credentials should be in `~/.aws` folder, which contains `~/.aws/config` and `~/.aws/credentials` file.
