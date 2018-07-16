@@ -50,7 +50,7 @@ cd ruttle
 cargo install 
 
 # update shuttle config
-./ruttle
+ruttle
 
 ```
 
