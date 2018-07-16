@@ -41,14 +41,28 @@ Use Rust to update shuttle configuration file, mainly used for accessing AWS EC2
 
 `ruttle` will update each instance's `PUBLIC_IP` based on its `instanceID`.
 
+
+## Usage
+
+```bash
+git clone https://github.com/shohi/ruttle.git
+cd ruttle
+cargo install 
+
+# update shuttle config
+./ruttle
+
+```
+
+
 ## TODO List
 
 - [x] Read `shuttle` configuration file
 - [x] Read `AWS` configuration
-- [ ] Parse configuration to get each AWS instance id
-- [ ] Fetch public ip of AWS instance id
-- [ ] Overwrite public ip with the newly one to Configuration
-- [ ] Dump configuration to file
+- [x] Parse configuration to get each AWS instance id
+- [x] Fetch public ip of AWS instance id
+- [x] Overwrite public ip with the newly one to Configuration
+- [x] Dump configuration to file
 - [ ] Refactor project structure
 
 ## Note

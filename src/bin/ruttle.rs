@@ -1,47 +1,77 @@
 extern crate serde_json;
 extern crate stllib;
+extern crate regex;
 
 use std::env;
 use std::io::prelude::*;
+use std::cell::RefCell;
+use std::ops::{DerefMut, Deref};
+use regex::{Regex, Captures};
 
 use serde_json::{Value};
 use stllib::shuttle::config;
 use stllib::aws::ec2::EC2Proxy;
 
+
 fn main() {
     
     // load config
     let content = config::load_config().unwrap();
-    let v: Value = serde_json::from_str(&content).unwrap();
+    let data: Value = serde_json::from_str(&content).unwrap();
+    let val = RefCell::new(data);
     
-    // update aws public ip
-    let proxy = EC2Proxy::new();
+    // update config - mainly public ip
+    {
+        let mut v = val.borrow_mut();
+        update_config(v.deref_mut());
+    }
 
-    let hosts: &Vec<Value> = v["hosts"].as_array().unwrap();
-    for info in hosts.iter() {
-        let mut cluster = info.as_object().unwrap();
-        for (key, val) in cluster.iter_mut() {
-            let mut group = val.as_array().unwrap();
-            for ref inst in group.iter() {
-                let typ = inst["type"].as_str().unwrap();
-                if typ == "AWS" {
-                    let instID = inst["instanceID"].as_str().unwrap();
-                    // println!("type: {}, inst: {}", typ, inst)
-                    let ip = match proxy.get_instance_public_ip(instID.to_string()) {
-                        Some(s) => s, 
-                        None => continue,
-                    };
-                    println!("type: {}, inst: {}, ip: {:?}", typ, inst,ip)
-                }
+    // save config
+    let res = val.borrow();
+    // println!("content: {:?}", res.to_string());
+    let res = config::save_config(res.deref());
+    match res {
+        Ok(()) => println!("saving config successfully"),
+        Err(e) => panic!("error saving config: {:?}", e),
+    }
+}
+
+
+// 
+fn update_config(v: &mut Value) {
+    let proxy = EC2Proxy::new();
+    let re = Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").unwrap();
+
+    let hosts: &mut Vec<Value> = v["hosts"].as_array_mut().unwrap();
+    for info in hosts.iter_mut() {
+        let mut cluster = info.as_object_mut().unwrap();
+        for (_key, val) in cluster.iter_mut() {
+            let mut group = val.as_array_mut().unwrap();
+            for item in group.iter_mut() {
+                update_item_public_ip(&proxy, item, &re);
             }
         }
     }
-    // save config
-    /*
-    let res = config::save_config(&v);
-    match res {
-        Ok(()) => println!("saving config successfully"),
-        Err(e) => println!("error saving config: {:?}", e),
-    }
-    */
 }
+
+// 
+fn update_item_public_ip(proxy :&EC2Proxy, item :&mut Value, re: &Regex) {
+    let typ = item["type"].as_str().unwrap();
+    if typ != "AWS" {
+        return 
+    }
+    
+    let inst_id = item["instanceID"].as_str().unwrap();
+    let ip = match proxy.get_instance_public_ip(inst_id) {
+        Some(s) => s, 
+        None => return,
+    };
+
+    let mut cmd = item["cmd"].as_str().unwrap().to_string();
+    cmd = re.replace_all(&cmd, |_caps: &Captures| {
+        ip.to_owned()
+    }).to_string();
+    
+    // println!("type: {}, inst: {}, ip: {:?}", typ, item, ip);
+}
+

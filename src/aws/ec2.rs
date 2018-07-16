@@ -17,8 +17,8 @@ impl EC2Proxy {
         }
     }
 
-    pub fn get_instance_public_ip(&self, instID: String) -> Option<String> {
-        let insts: Vec<String> = vec![instID];
+    pub fn get_instance_public_ip(&self, inst_id: &str) -> Option<String> {
+        let insts: Vec<String> = vec![inst_id.to_string()];
 
         let req = DescribeInstancesRequest {
             instance_ids: Some(insts),
@@ -38,7 +38,7 @@ impl EC2Proxy {
                 }
             },
             Err(error) => {
-                println!("Error: {:?}", error);
+                println!("inst: {}, error: {:?}", inst_id, error);
             },
         }
 
