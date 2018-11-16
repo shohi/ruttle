@@ -1,30 +1,26 @@
+extern crate regex;
 extern crate serde_json;
 extern crate stllib;
-extern crate regex;
 
+use regex::{Captures, Regex};
+use std::cell::RefCell;
 use std::env;
 use std::io::prelude::*;
-use std::cell::RefCell;
-use std::ops::{DerefMut, Deref};
-use regex::{Regex, Captures};
+use std::ops::{Deref, DerefMut};
 
-use serde_json::{Value};
-use stllib::shuttle::config;
+use serde_json::Value;
 use stllib::aws::ec2::EC2Proxy;
-
+use stllib::shuttle::config;
 
 fn main() {
-    
     // load config
     let content = config::load_config().unwrap();
     let data: Value = serde_json::from_str(&content).unwrap();
     let val = RefCell::new(data);
-    
+
     // update config - mainly public ip
-    {
-        let mut v = val.borrow_mut();
-        update_config(v.deref_mut());
-    }
+    let mut v = val.borrow_mut();
+    update_config(v.deref_mut());
 
     // save config
     let res = val.borrow();
@@ -36,8 +32,7 @@ fn main() {
     }
 }
 
-
-// 
+//
 fn update_config(v: &mut Value) {
     let proxy = EC2Proxy::new();
     let re = Regex::new(r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}").unwrap();
@@ -54,24 +49,23 @@ fn update_config(v: &mut Value) {
     }
 }
 
-// 
-fn update_item_public_ip(proxy :&EC2Proxy, item :&mut Value, re: &Regex) {
+//
+fn update_item_public_ip(proxy: &EC2Proxy, item: &mut Value, re: &Regex) {
     let typ = item["type"].as_str().unwrap();
     if typ != "AWS" {
-        return 
+        return;
     }
-    
+
     let inst_id = item["instanceID"].as_str().unwrap();
     let ip = match proxy.get_instance_public_ip(inst_id) {
-        Some(s) => s, 
+        Some(s) => s,
         None => return,
     };
 
     let mut cmd = item["cmd"].as_str().unwrap().to_string();
-    cmd = re.replace_all(&cmd, |_caps: &Captures| {
-        ip.to_owned()
-    }).to_string();
-    
+    cmd = re
+        .replace_all(&cmd, |_caps: &Captures| ip.to_owned())
+        .to_string();
+
     // println!("type: {}, inst: {}, ip: {:?}", typ, item, ip);
 }
-

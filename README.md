@@ -9,7 +9,7 @@ Use Rust to update shuttle configuration file, mainly used for accessing AWS EC2
 > `brew cask install shuttle`
 
 2. `rust` -- <https://github.com/rust-lang/rust>
-> `version >= 1.27` (support `impl Trait`)
+> `version >= 1.30.1` (support `NLL` and `impl Trait`)
 
 ## Configuration
 
@@ -47,7 +47,7 @@ Use Rust to update shuttle configuration file, mainly used for accessing AWS EC2
 ```bash
 git clone https://github.com/shohi/ruttle.git
 cd ruttle
-cargo install 
+cargo install
 
 # update shuttle config
 ruttle
