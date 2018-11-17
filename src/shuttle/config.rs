@@ -46,6 +46,6 @@ pub fn save_config(v: &Value) -> Result<()>{
             .create(true)
             .open(path)?;
 
-    file.write_all(Value::to_string(v).as_bytes())?;
+    file.write_all(Value::to_string_pretty(v).as_bytes())?;
     return Ok(());
 }

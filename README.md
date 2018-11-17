@@ -65,6 +65,7 @@ ruttle
 - [x] Dump configuration to file
 - [ ] Refactor project structure
 - [ ] Support `AWS` credentials configuration
+- [ ] Format JSON output
 - [ ] Update public ip regardless structure of shuttle config
 
 ## Note
