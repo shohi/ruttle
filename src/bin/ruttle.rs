@@ -4,8 +4,6 @@ extern crate stllib;
 
 use regex::{Captures, Regex};
 use std::cell::RefCell;
-use std::env;
-use std::io::prelude::*;
 use std::ops::{Deref, DerefMut};
 
 use serde_json::Value;
@@ -39,9 +37,9 @@ fn update_config(v: &mut Value) {
 
     let hosts: &mut Vec<Value> = v["hosts"].as_array_mut().unwrap();
     for info in hosts.iter_mut() {
-        let mut cluster = info.as_object_mut().unwrap();
+        let cluster = info.as_object_mut().unwrap();
         for (_key, val) in cluster.iter_mut() {
-            let mut group = val.as_array_mut().unwrap();
+            let group = val.as_array_mut().unwrap();
             for item in group.iter_mut() {
                 update_item_public_ip(&proxy, item, &re);
             }

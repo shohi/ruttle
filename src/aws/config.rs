@@ -1,5 +1,4 @@
 use toml;
-use std::io::prelude::*;
 
 #[derive(Deserialize, Debug)]
 pub struct AwsConfig {

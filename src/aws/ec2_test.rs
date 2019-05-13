@@ -1,4 +1,3 @@
-
 mod tests {
     use super::super::*;
     use regex::Regex;
@@ -17,4 +16,3 @@ mod tests {
         println!("is match: {}", is_match);
     }
 }
-

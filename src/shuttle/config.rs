@@ -3,14 +3,15 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::io::{Result, Error, ErrorKind};
 
-use serde_json::Value;
+use serde_json::{self, Value};
 use std::fs::OpenOptions;
+use dirs;
 
 const SHUTTLE_CONFIG: &str = ".shuttle.json";
 
 // read shuttle default configuration
 pub fn load_config() -> Option<String> {
-    let path = try_opt!(env::home_dir()).join(SHUTTLE_CONFIG);
+    let path = try_opt!(dirs::home_dir()).join(SHUTTLE_CONFIG);
 
     let mut f = match File::open(&path) {
         Err(err) => {
@@ -34,7 +35,7 @@ pub fn load_config() -> Option<String> {
 
 // read shuttle default configuration
 pub fn save_config(v: &Value) -> Result<()>{
-    let homedir = env::home_dir();
+    let homedir = dirs::home_dir();
     let path = match homedir {
         Some(p) => p.join(SHUTTLE_CONFIG), 
         None => return Err(Error::new(ErrorKind::Other, "home dir not found!"))
@@ -46,6 +47,6 @@ pub fn save_config(v: &Value) -> Result<()>{
             .create(true)
             .open(path)?;
 
-    file.write_all(Value::to_string_pretty(v).as_bytes())?;
+    file.write_all(serde_json::to_string_pretty(v)?.as_bytes())?;
     return Ok(());
 }
