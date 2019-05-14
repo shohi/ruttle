@@ -21,9 +21,7 @@ fn main() {
     update_config(v.deref_mut());
 
     // save config
-    let res = val.borrow();
-    // println!("content: {:?}", res.to_string());
-    let res = config::save_config(res.deref());
+    let res = config::save_config(v.deref());
     match res {
         Ok(()) => println!("saving config successfully"),
         Err(e) => panic!("error saving config: {:?}", e),

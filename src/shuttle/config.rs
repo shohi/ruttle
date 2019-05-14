@@ -1,11 +1,10 @@
-use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{Result, Error, ErrorKind};
+use std::io::{Error, ErrorKind, Result};
 
+use dirs;
 use serde_json::{self, Value};
 use std::fs::OpenOptions;
-use dirs;
 
 const SHUTTLE_CONFIG: &str = ".shuttle.json";
 
@@ -17,8 +16,8 @@ pub fn load_config() -> Option<String> {
         Err(err) => {
             println!("open path - [{}] - error, err: {}", &path.display(), err);
             return None;
-        },
-        Ok(f) => f
+        }
+        Ok(f) => f,
     };
 
     let mut contents = String::new();
@@ -29,23 +28,23 @@ pub fn load_config() -> Option<String> {
         }
         Ok(_) => {}
     }
-    
+
     return Some(contents);
 }
 
 // read shuttle default configuration
-pub fn save_config(v: &Value) -> Result<()>{
+pub fn save_config(v: &Value) -> Result<()> {
     let homedir = dirs::home_dir();
     let path = match homedir {
-        Some(p) => p.join(SHUTTLE_CONFIG), 
-        None => return Err(Error::new(ErrorKind::Other, "home dir not found!"))
+        Some(p) => p.join(SHUTTLE_CONFIG),
+        None => return Err(Error::new(ErrorKind::Other, "home dir not found!")),
     };
 
     let mut file = OpenOptions::new()
-            .truncate(true)
-            .write(true)
-            .create(true)
-            .open(path)?;
+        .truncate(true)
+        .write(true)
+        .create(true)
+        .open(path)?;
 
     file.write_all(serde_json::to_string_pretty(v)?.as_bytes())?;
     return Ok(());
