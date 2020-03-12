@@ -30,7 +30,7 @@ Use Rust to update shuttle configuration file, mainly used for accessing AWS EC2
             "instanceID": "[Instance ID]",
             "cmd": "ssh -i <YOUR_PEM_FILE> <USER>@<PUBLIC_IP>",
             "inTerminal": "tab",
-            "theme": "basic",
+            "theme": "basic"
         }
     }]
 }
